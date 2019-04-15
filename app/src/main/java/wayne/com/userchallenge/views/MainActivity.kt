@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
 
         user_rec_view.layoutManager = LinearLayoutManager(this)
         user_rec_view.adapter = adapter
+        //TODO: add pictures
 
     }
 }
