@@ -14,3 +14,10 @@ class User(
     val last_name : String,
     val avatar : String
 )
+
+class CreatedUser(
+    val name : String,
+    val job : String,
+    val id : String,
+    val createdAt : String
+)

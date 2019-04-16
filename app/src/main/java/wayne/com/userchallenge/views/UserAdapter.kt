@@ -4,11 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.user_item.view.*
 import wayne.com.userchallenge.R
 import wayne.com.userchallenge.data.User
 
-class UserAdapter : RecyclerView.Adapter<UserAdapter.UserHolder>() {
+class UserAdapter : RecyclerView.Adapter<UserAdapter.UserHolder>(), IUserAdapter {
 
     val userList: MutableList<User> = mutableListOf()
 
@@ -21,11 +22,15 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.UserHolder>() {
     }
 
     override fun onBindViewHolder(holder: UserHolder, position: Int) {
-        holder.view1.text = userList[position].first_name
-        holder.view2.text = userList[position].last_name
+        val firstName = userList[position].first_name
+        val lastName = userList[position].last_name
+        val name = "$firstName $lastName"
+        holder.view1.text = name
+        val imgUrl = userList[position].avatar
+        holder.updateWithUrl(imgUrl)
     }
 
-    fun setList(users: List<User>) {
+    override fun setList(users: List<User>) {
         userList.clear()
         userList.addAll(users)
         notifyDataSetChanged()
@@ -33,7 +38,10 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.UserHolder>() {
 
     inner class UserHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val view1 = itemView.textView
-        val view2 = itemView.textView2
+        val profilePic = itemView.profile
+        fun updateWithUrl(url: String) {
+            Picasso.get().load(url).into(profilePic)
+        }
     }
 
 }

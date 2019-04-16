@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">UserChallenge</string>
+    <string name="name">Name</string>
+    <string name="job">Job</string>
+    <string name="ok">create</string>
+    <string name="cancel">cancel</string>
 </resources>

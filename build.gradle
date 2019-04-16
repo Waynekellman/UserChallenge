@@ -12,7 +12,9 @@ buildscript {
     ext.retrofit_version = '2.5.0'
     ext.koin_version = '2.0.0-rc-2'
     ext.rxjava = '2.1.6'
-    ext.rxandroid = '2.0.1'
+    ext.rxandroid = '2.1.0'
+    ext.pic_version = '2.71828'
+    ext.material = '1.1.0-alpha05'
     repositories {
         google()
         jcenter()

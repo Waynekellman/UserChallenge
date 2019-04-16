@@ -1,48 +1,52 @@
 package wayne.com.userchallenge.viewmodels
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
-import retrofit2.Retrofit
-import wayne.com.userchallenge.data.User
-import wayne.com.userchallenge.data.UserApi
-import wayne.com.userchallenge.data.Users
-import wayne.com.userchallenge.views.UserAdapter
+import wayne.com.userchallenge.data.*
+import wayne.com.userchallenge.views.IMainActivity
 
-class MainViewModel(val retrofit: Retrofit) : ViewModel(){
+class MainViewModel(private val repository: UserRepository) : ViewModel(){
 
-    val userList: MutableList<User> = mutableListOf()
-    val userApi: UserApi = retrofit.create(UserApi::class.java)
-    val compositeDisposable = CompositeDisposable()
-    lateinit var adapter : UserAdapter
+    private val userList: MutableList<User> = mutableListOf()
+    lateinit var mainActivity: IMainActivity
 
     fun getUsers(page : Int = 1){
+
         if (page == 1) {
             userList.clear()
         }
-        compositeDisposable.add(userApi.getUsers(page)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.io())
-            .subscribe(this::handleResponse, this::handleError)
-        )
+        repository.getUsers(handleResponse = this::handleResponse,handleError = this::handleError)
+
     }
 
     private fun handleResponse(apiResponse: Users){
         userList.addAll(apiResponse.data)
         if (apiResponse.page != apiResponse.total_pages){
-            getUsers(apiResponse.page + 1)
+            repository.getUsers(apiResponse.page + 1,this::handleResponse,this::handleError)
         } else {
-            adapter.setList(userList)
+            mainActivity.setList(userList)
         }
     }
 
     private fun handleError(apiResponse: Throwable){
         Log.d("MainViewModel", apiResponse.localizedMessage)
+        if (apiResponse.localizedMessage == "timeout") repository.getUsers(handleResponse = this::handleResponse, handleError = this::handleError)
     }
 
+    @SuppressLint("CheckResult")
     fun postUser(name: String, job: String){
-        //TODO: create post
+        repository.postUser(name = name,job = job,handleResponse = this::handlePostResponse,handleError = this::handlePostError)
+    }
+
+    private fun handlePostResponse(apiPostResponse: CreatedUser) {
+        mainActivity.makeToast("User " + apiPostResponse.name + " created")
+    }
+    private fun handlePostError(apiPostError: Throwable){
+        mainActivity.makeToast("Couldn't create user. Error: " + apiPostError.localizedMessage)
+    }
+
+    fun dispose(){
+        repository.dispose()
     }
 }
