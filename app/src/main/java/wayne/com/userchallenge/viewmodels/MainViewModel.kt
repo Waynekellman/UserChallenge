@@ -25,6 +25,7 @@ class MainViewModel(private val repository: UserRepository) : ViewModel(){
         if (apiResponse.page != apiResponse.total_pages){
             repository.getUsers(apiResponse.page + 1,this::handleResponse,this::handleError)
         } else {
+            mainActivity.removeSpinner()
             mainActivity.setList(userList)
         }
     }

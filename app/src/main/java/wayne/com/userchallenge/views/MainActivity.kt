@@ -1,6 +1,7 @@
 package wayne.com.userchallenge.views
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity(), IMainActivity {
         setContentView(R.layout.activity_main)
         mainViewModel.mainActivity = this
         mainViewModel.getUsers()
+        users_progress.visibility = View.VISIBLE
 
 
         user_rec_view.layoutManager = GridLayoutManager(this, 2)
@@ -66,6 +68,10 @@ class MainActivity : AppCompatActivity(), IMainActivity {
 
     override fun makeToast(text: String) {
         Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+    }
+
+    override fun removeSpinner(){
+        users_progress.visibility = View.GONE
     }
 
     override fun onDestroy() {

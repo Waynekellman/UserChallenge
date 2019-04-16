@@ -6,4 +6,5 @@ interface IMainActivity {
 
     fun setList(users: List<User>)
     fun makeToast(text: String)
+    fun removeSpinner()
 }
